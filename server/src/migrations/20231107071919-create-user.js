@@ -38,6 +38,21 @@ module.exports = {
       role: {
         type: Sequelize.INTEGER,
       },
+      dob: {
+        type: Sequelize.DATE,
+      },
+      gender: {
+        type: Sequelize.STRING,
+      },
+      passwordChangeAt: {
+        type: Sequelize.DATE,
+      },
+      passwordResetToken: {
+        type: Sequelize.STRING,
+      },
+      passwordResetExpires: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

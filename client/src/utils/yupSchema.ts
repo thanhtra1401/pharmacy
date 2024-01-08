@@ -9,6 +9,8 @@ export const registerSchema = yup
         /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g,
         "Email không đúng"
       ),
+    firstName: yup.string().required("Bạn chưa nhập họ tên"),
+    lastName: yup.string().required("Bạn chưa nhập họ tên"),
     password: yup
       .string()
       .required("Bạn chưa nhập mật khẩu")
@@ -20,4 +22,20 @@ export const registerSchema = yup
       .oneOf([yup.ref("password")], "Mật khẩu không khớp"),
   })
   .required();
-export const loginSchema = registerSchema.omit(["confirmPassword"]);
+export const loginSchema = registerSchema.omit([
+  "confirmPassword",
+  "firstName",
+  "lastName",
+]);
+export const resetPasswordSchema = registerSchema.omit([
+  "confirmPassword",
+  "firstName",
+  "lastName",
+  "password",
+]);
+export const forgotPasswordSchema = registerSchema.omit([
+  "confirmPassword",
+  "firstName",
+  "lastName",
+  "email",
+]);

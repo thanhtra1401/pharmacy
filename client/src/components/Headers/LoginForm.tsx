@@ -1,6 +1,10 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { loginSchema } from "../../utils/yupSchema";
+import { loginApi } from "../../apis/userApi/api";
+import authStore from "../../store/store";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 interface Props {
   closeModal: () => void;
@@ -10,7 +14,15 @@ interface Data {
   email: string;
   password: string;
 }
+
 function LoginForm(props: Props) {
+  const navigate = useNavigate();
+
+  const toForgotPassWord = () => {
+    navigate("/reset-password");
+    props.closeModal();
+  };
+
   const {
     register,
     handleSubmit,
@@ -18,8 +30,29 @@ function LoginForm(props: Props) {
   } = useForm<Data>({
     resolver: yupResolver(loginSchema),
   });
-  const onSubmit = (data: Data) => {
-    console.log(data);
+  const login = authStore((state) => state.login);
+
+  const onSubmit = async (data: Data) => {
+    try {
+      const response = await loginApi(data);
+      if (response.data?.data) {
+        login(response.data.data);
+      }
+
+      props.closeModal();
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log(error);
+      if (error.response) {
+        Swal.fire({
+          icon: "error",
+          text: error.response.data.message,
+        });
+      } else {
+        alert(error);
+      }
+    }
   };
 
   return (
@@ -38,9 +71,8 @@ function LoginForm(props: Props) {
         <div className="mb-1">
           <input
             {...register("email")}
-            id="email"
             placeholder="Email"
-            className="border-[0.5px] rounded-lg px-4 py-3 w-full outline-none focus:border-primary  "
+            className="border-[0.5px] rounded-lg px-4 py-3 w-full outline-none focus:border-primary"
           />
         </div>
 
@@ -52,8 +84,8 @@ function LoginForm(props: Props) {
           <input
             {...register("password")}
             type="password"
-            id="password"
             placeholder="Mật khẩu"
+            autoComplete="on"
             className="border-[0.5px] rounded-lg px-4 py-3 w-full outline-none focus:border-primary"
           />
         </div>
@@ -62,11 +94,17 @@ function LoginForm(props: Props) {
         </div>
         <button
           type="submit"
-          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-full w-full mt-4"
+          className="bg-blue-500 hover:bg-blue-600 text-white hover:text-white px-3 py-4 font-bold  rounded-full w-full mt-4 !important "
         >
           Đăng nhập
         </button>
       </form>
+      <div
+        className="text-sm mt-2 text-primary hover:text-blue-700  cursor-pointer"
+        onClick={toForgotPassWord}
+      >
+        Quên mật khẩu?
+      </div>
       <div className="mt-4 flex justify-center">
         Bạn chưa có tài khoản?
         <button

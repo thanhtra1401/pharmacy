@@ -6,7 +6,7 @@ const generateAccessToken = (id, role) => {
       data: { id, role },
     },
     process.env.JWT_KEY,
-    { expiresIn: "60s" }
+    { expiresIn: "1d" }
   );
   return token;
 };
@@ -21,5 +21,15 @@ const generateRefreshToken = (id) => {
   );
   return token;
 };
+const generateResetToken = (id) => {
+  const token = jwt.sign(
+    {
+      data: { id },
+    },
+    process.env.JWT_KEY,
+    { expiresIn: "60s" }
+  );
+  return token;
+};
 
-export { generateAccessToken, generateRefreshToken };
+export { generateAccessToken, generateRefreshToken, generateResetToken };
