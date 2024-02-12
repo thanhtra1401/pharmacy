@@ -1,65 +1,176 @@
-import { Button } from "antd";
+import { Button, Modal } from "antd";
 import { formatCurrency } from "../../utils/function";
+import { Order } from "../../interfaces/orderInterface";
+import { useState } from "react";
+import { addToCartApi, updateCartApi } from "../../apis/cartApi";
+import { productStore } from "../../store/store";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
-function OrderItem({ status }: { status: number }) {
+function OrderItem({ order }: { order: Order }) {
+  const cartId = productStore((state) => state.cart_id);
+  const [buy, setBuy] = useState(false);
+  const navigate = useNavigate();
+
+  const addToCart = async () => {
+    order.OrderDetails.forEach(async (item) => {
+      const response = await addToCartApi({
+        cartId: cartId,
+        productId: item.productId,
+        amount: item.amount,
+      });
+
+      if (response.status !== 200) {
+        Swal.fire({
+          text: "Có lỗi xảy ra. Vui lòng thử lại",
+          icon: "error",
+        });
+      } else {
+        const responseUpdateCart = await updateCartApi(cartId);
+        if (responseUpdateCart.status !== 200) {
+          Swal.fire({
+            text: "Có lỗi xảy ra. Vui lòng thử lại",
+            icon: "error",
+          });
+        }
+      }
+    });
+
+    Swal.fire({
+      title: "Đã thêm vào giỏ hàng",
+      showDenyButton: true,
+      showCancelButton: false,
+      confirmButtonText: "Đi đến giỏ hàng",
+      denyButtonText: `Về trang đơn hàng`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate("/gio-hang");
+      }
+    });
+  };
+
   return (
     <div className="w-full bg-white mt-4 ">
       <div className="flex justify-between py-3 items-center border-b-2 border-gray-300 ">
         <div className="flex">
-          <div className="mx-4 font-medium">Đơn hàng 20/08/2023</div>
-          <div className="text-gray-600">#1234</div>
+          <div className="mx-4 font-medium">
+            <span>Đơn hàng </span>
+            {order.createdAt && new Date(order.createdAt).toLocaleDateString()}
+          </div>
+          <div className="text-gray-600">#{order.id}</div>
         </div>
 
-        {status === 0 && (
-          <div className="text-[#4caf50] flex items-center">
-            <i className="fa-solid fa-circle text-[8px]"></i>
-            <span className="mr-4 ml-2">Đã giao</span>
-          </div>
-        )}
-        {status === 1 && (
-          <div className="text-[#ff9800] flex items-center">
+        {order.status === 0 && (
+          <div className="text-[#64b5f6] flex items-center">
             <i className="fa-solid fa-circle text-[8px]"></i>
             <span className="mr-4 ml-2">Đang xử lý</span>
           </div>
         )}
-        {status === 2 && (
-          <div className="text-[#64b5f6] flex items-center">
+        {order.status === 1 && (
+          <div className="text-[#ff9800] flex items-center">
             <i className="fa-solid fa-circle text-[8px]"></i>
             <span className="mr-4 ml-2">Đang giao</span>
           </div>
         )}
+        {order.status === 2 && (
+          <div className=" text-[#4caf50] flex items-center">
+            <i className="fa-solid fa-circle text-[8px]"></i>
+            <span className="mr-4 ml-2">Đã giao</span>
+          </div>
+        )}
       </div>
-      <div className="flex mt-4 items-center justify-between">
-        <div className="flex items-center">
-          <img
-            src="https://cdn.nhathuoclongchau.com.vn/unsafe/50x50/https://cms-prod.s3-sgn09.fptcloud.com/00005427_nuoc_suc_mieng_t_b_1058_62bc_large_55a1ddba21.jpg"
-            alt="img"
-            className="w-18 h-18 rounded-lg border-[1px] p-2 mx-4"
-          />
-          <span className="font-medium uppercase">TB-Traphaco 500ml</span>
+      {order.OrderDetails.map((item) => (
+        <div key={item.id} className="flex mt-4 items-center justify-between">
+          <div className="flex items-center">
+            <img
+              src={item.Product.image}
+              alt="img"
+              className="w-16 h-16 rounded-lg border-[1px] p-2 mx-4"
+            />
+            <span className="font-medium uppercase">{item.Product.name}</span>
+          </div>
+          <div className="flex">
+            <span className="font-medium">{formatCurrency(item.price)}đ</span>
+            <span className="mx-4">
+              x{item.amount} {item.Product.unit}
+            </span>
+          </div>
         </div>
-        <div className="flex">
-          <span className="font-medium">{formatCurrency(180000)}</span>
-          <span className="mx-4">x1 Chai</span>
-        </div>
-      </div>
+      ))}
+
       <div className="flex items-center justify-between py-4 border-b-2 border-gray-300">
-        <div className="flex items-center text-primary cursor-pointer">
+        <div
+          className="flex items-center text-primary cursor-pointer"
+          onClick={() => {
+            navigate(`/thong-tin-ca-nhan/don-hang/${order.id}`);
+          }}
+        >
           <div className="ml-4 mr-2">Xem chi tiết</div>
           <i className="fa-solid fa-chevron-right text-xs leading-none"></i>
         </div>
         <div className="mx-4">
           Thành tiền:{" "}
           <span className="text-primary font-medium ">
-            {formatCurrency(180000)}
+            {formatCurrency(order.totalPrice)}đ
           </span>
         </div>
       </div>
       <div className="flex  py-4 items-center justify-end ">
-        <Button type="primary" className="bg-primary mx-4" shape="round">
+        <Button
+          type="primary"
+          className="bg-primary mx-4"
+          shape="round"
+          onClick={() => {
+            setBuy(true);
+          }}
+        >
           <div className="px-4">Mua lại</div>
         </Button>
       </div>
+      {buy && (
+        <Modal
+          open={buy}
+          onCancel={() => {
+            setBuy(false);
+          }}
+          title="Mua lại đơn hàng"
+          width={700}
+          className="text-center"
+          okText="Thêm vào giỏ hàng"
+          cancelText="Hủy bỏ"
+          closeIcon={false}
+          okButtonProps={{ className: "bg-primary" }}
+          onOk={() => {
+            addToCart();
+            setBuy(false);
+          }}
+        >
+          <div>
+            {order.OrderDetails.map((item) => (
+              <div
+                key={item.id}
+                className="flex mt-4 items-center justify-between"
+              >
+                <div className="flex items-center">
+                  <img
+                    src={item.Product.image}
+                    alt="img"
+                    className="w-16 h-16 rounded-lg border-[1px] p-2 mx-4"
+                  />
+                  <span className="font-medium uppercase">
+                    {item.Product.name}
+                  </span>
+                </div>
+                <div className="flex">
+                  <span className="mx-4">
+                    x{item.amount} {item.Product.unit}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }

@@ -1,17 +1,21 @@
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import authStore from "../../store/store";
-import { Alert } from "antd";
+import { Button, Result } from "antd";
 
 function AuthProtected() {
   const isAuthenticated = authStore((state) => state.isAuthenticated);
   return isAuthenticated ? (
     <Outlet />
   ) : (
-    <Alert
-      message="Có lỗi xảy ra"
-      description="Bạn cần đăng nhập để tiếp tục"
-      type="error"
-      showIcon
+    <Result
+      status="403"
+      title="403"
+      subTitle="Sorry, you are not authorized to access this page."
+      extra={
+        <Link to="/">
+          <Button type="primary">Back Home</Button>
+        </Link>
+      }
     />
   );
 }

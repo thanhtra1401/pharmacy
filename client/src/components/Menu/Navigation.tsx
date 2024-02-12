@@ -1,62 +1,69 @@
 import { Menu } from "antd";
-import SubMenu from "antd/es/menu/SubMenu";
-import { getCategory } from "../../apis/categoryApi";
+import { getCategoryApi } from "../../apis/categoryApi";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { convertSlug } from "../../utils/function";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 interface Category {
   id: number;
   name: string;
+  slug: string;
   description: string;
   parentId: number;
 }
 interface CategoryRes {
   id: number;
   name: string;
+  slug: string;
   description: string;
   parentId: number;
   children: Category[];
 }
 
 function Navigation() {
+  const navigate = useNavigate();
+
   const [categories, setCategories] = useState<CategoryRes[]>([]);
+
+  const cat = useParams().category;
+
   const getCategoryNav = async () => {
     try {
-      const response = await getCategory();
+      const response = await getCategoryApi();
       setCategories(response.data.categories);
     } catch (error) {
       alert(error);
     }
   };
+  const items =
+    categories.length !== 0
+      ? categories.map((category) => ({
+          key: category.id,
+          label: (
+            <div
+              //to={`/${category.slug}`}
+              onClick={() => {
+                navigate(`/${category.slug}`);
+              }}
+              className={
+                cat === category.slug ? "text-primary" : "text-gray-700"
+              }
+            >
+              {category.name}
+            </div>
+          ),
+          children: category.children.map((item) => ({
+            key: item.id,
+            label: <Link to={`/${item.slug}`}>{item.name}</Link>,
+          })),
+        }))
+      : undefined;
   useEffect(() => {
     getCategoryNav();
   }, []);
-  console.log(categories);
+
   return (
     <div className="container">
-      <Menu mode="horizontal" className="w-full">
-        {categories.length !== 0 &&
-          categories.map((category) => (
-            <SubMenu
-              key={category.id}
-              title={
-                <Link
-                  to={convertSlug(category.name)}
-                  className="hover:text-current"
-                >
-                  {category.name}
-                </Link>
-              }
-            >
-              {category.children.map((item) => (
-                <Menu.Item key={item.id}>
-                  <Link to={convertSlug(item.name)}>{item.name}</Link>
-                </Menu.Item>
-              ))}
-            </SubMenu>
-          ))}
-      </Menu>
+      <Menu mode="horizontal" className="w-full flex" items={items}></Menu>
     </div>
   );
 }

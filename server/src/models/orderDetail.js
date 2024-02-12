@@ -15,6 +15,9 @@ module.exports = (sequelize, DataTypes) => {
       OrderDetail.belongsTo(models.Product, {
         foreignKey: "productId",
       });
+      OrderDetail.belongsTo(models.Discount, {
+        foreignKey: "discountId",
+      });
     }
   }
   OrderDetail.init(
@@ -22,6 +25,8 @@ module.exports = (sequelize, DataTypes) => {
       orderId: DataTypes.INTEGER,
       productId: DataTypes.INTEGER,
       amount: DataTypes.INTEGER,
+      price: DataTypes.DOUBLE,
+      discountId: DataTypes.INTEGER,
     },
     {
       sequelize,

@@ -6,7 +6,7 @@ const generateAccessToken = (id, role) => {
       data: { id, role },
     },
     process.env.JWT_KEY,
-    { expiresIn: "1d" }
+    { expiresIn: "2d" }
   );
   return token;
 };

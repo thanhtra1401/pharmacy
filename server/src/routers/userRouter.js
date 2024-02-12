@@ -26,7 +26,7 @@ userRouter.post("/reset-password", resetPassword);
 userRouter.put("/:id", verifyToken, updateUser);
 userRouter.put(
   "/upload-avatar/:id",
-  verifyToken,
+
   uploadImage("avatar"),
   uploadAvatar
 );

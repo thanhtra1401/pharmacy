@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { User } from "../models";
+import { User, Cart, Order, Address } from "../models";
 import {
   generateAccessToken,
   generateRefreshToken,
@@ -40,6 +40,8 @@ const register = async (req, res, next) => {
       lastName,
       role: 0,
     });
+    await Cart.create({ customerId: newUser.id, totalPrice: 0 });
+
     res.status(201).json({
       success: true,
       message: "Đăng ký tài khoản thành công",
@@ -67,7 +69,7 @@ const login = async (req, res, next) => {
     if (user) {
       const checkPassword = bcrypt.compareSync(password, user.password);
       if (checkPassword) {
-        const { password, role, ...userData } = user;
+        const { password, ...userData } = user;
         // console.log("userData: ", userData);
 
         const accessToken = generateAccessToken(user.id, user.role);
@@ -118,15 +120,22 @@ const getUserInfo = async (req, res, next) => {
       where: {
         id,
       },
-      raw: true,
+      include: [
+        {
+          model: Order,
+        },
+        {
+          model: Address,
+        },
+      ],
     });
+
     if (user) {
-      const { password, ...userInfo } = user;
       res.status(200).json({
         success: true,
         message: "Lấy thông tin người dùng thành công",
         data: {
-          user: userInfo,
+          user,
         },
       });
     }
@@ -203,7 +212,7 @@ const logout = async (req, res, next) => {
 const getAllCustomers = async (req, res, next) => {
   try {
     const { page, size, name } = req.query;
-    const limit = size ? parseInt(size) : 3;
+    const limit = size ? parseInt(size) : 10;
     const offset = page ? (parseInt(page) - 1) * parseInt(size) : 0;
     const condition = name ? { firstName: { [Op.like]: `%${name}%` } } : null;
 
@@ -214,6 +223,14 @@ const getAllCustomers = async (req, res, next) => {
         role: 0,
         ...condition,
       },
+      include: [
+        {
+          model: Order,
+        },
+        {
+          model: Address,
+        },
+      ],
     });
     const totalPages = Math.ceil(count / limit);
     res.status(200).json({
@@ -355,7 +372,7 @@ const uploadAvatar = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "Cập nhật ảnh đại diện thành công",
-      user,
+      data: { user },
     });
   } catch (error) {
     next(error);

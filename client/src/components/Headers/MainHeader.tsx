@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "./Modal";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
-import authStore from "../../store/store";
+import authStore, { productStore } from "../../store/store";
 import { Link, useNavigate } from "react-router-dom";
 import { logoutApi } from "../../apis/userApi/api";
 import { Avatar, Badge, Menu, Popover } from "antd";
 import SubMenu from "antd/es/menu/SubMenu";
 import { UserOutlined, CodeSandboxOutlined } from "@ant-design/icons";
+import { getCartApi } from "../../apis/cartApi";
+import { Cart } from "../../interfaces/cartInterface";
 
 interface Props {
   showLogin?: boolean;
@@ -40,25 +42,61 @@ function MainHeader({ showLogin }: Props) {
   const logoutState = authStore((state) => state.logout);
   const user = authStore((state) => state.user);
 
+  const [searchData, setSearchData] = useState("");
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchData(e.target.value);
+  };
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    //setSearchParams({ name: searchData });
+    navigate(`/tim-kiem/?name=${searchData}&sort_by=sold&order=desc`);
+  };
+
+  const [cart, setCart] = useState<Cart>();
+  const dataGetCart = {
+    customerId: user ? user.id : -1,
+  };
+  const setCartId = productStore((state) => state.setCartId);
+
+  useEffect(() => {
+    const getCartByCusId = async () => {
+      const response = await getCartApi(dataGetCart);
+      if (response.status === 200) {
+        setCart(response.data.data.cart);
+        setCartId(response.data.data.cart.id);
+      }
+    };
+    getCartByCusId();
+  }, []);
+
   return (
     <div className=" h-[110px] bg-gradient-to-t from-[#1F64DE] to-[#4086EA] flex items-center">
       <div className="container grid grid-cols-10 ">
         <div className="col-span-1 bg-transparent">
           <Link to="/" className="cursor-pointer ">
-            <img alt="logo" src=".\img\logo.png"></img>
+            <img alt="logo" src="/logo.png"></img>
           </Link>
         </div>
 
         <div className="xl:col-span-6 col-span-5">
-          <div className="relative flex items-center h-full">
+          <form
+            className="relative flex items-center h-full"
+            onSubmit={handleSearch}
+          >
             <input
               className="block w-full rounded-full  border-none border-gray-300 bg-gray-50 p-4 pl-10 text-sm text-gray-900 outline-none "
               placeholder="Tìm tên thuốc"
+              value={searchData}
+              onChange={handleChange}
             />
-            <button className=" px-[13px] py-2 bg-primary border-solid  rounded-full absolute right-[7px] ">
+            <button
+              className=" px-[13px] py-2 bg-primary border-solid  rounded-full absolute right-[7px] "
+              type="submit"
+            >
               <i className="fa-solid fa-magnifying-glass text-white h-4 text-sm"></i>
             </button>
-          </div>
+          </form>
         </div>
         {isAuthenticated ? (
           <div className="col-span-2 flex items-center justify-center relative ">
@@ -185,11 +223,20 @@ function MainHeader({ showLogin }: Props) {
         )}
 
         <div className="xl:col-span-1 col-span-2 flex items-center justify-center text-white font-semibold ">
-          <div className="cursor-pointer py-3 px-4 bg-[#1250DC] rounded-full">
+          <div
+            className="cursor-pointer py-3 px-4 bg-[#1250DC] rounded-full"
+            onClick={() => {
+              navigate("/gio-hang");
+            }}
+          >
             {/* <i className="fa-solid fa-cart-shopping mr-2"></i>
             <span className="hidden sm:inline">Giỏ hàng</span> */}
 
-            <Badge count={1} offset={[-6, -6]} size="small">
+            <Badge
+              count={cart?.CartDetails.length}
+              offset={[-6, -6]}
+              size="small"
+            >
               <i className="fa-solid fa-cart-shopping mr-2 text-white font-semibold"></i>
             </Badge>
             <span className="hidden sm:inline">Giỏ hàng</span>

@@ -1,19 +1,93 @@
-import { Category } from "../models";
+import { Category, Product } from "../models";
+import { convertToSlug } from "../utils/function";
 
 const getCategory = async (req, res, next) => {
   try {
     const categories = await Category.findAll({
-      include: ["children"],
+      include: [
+        { model: Category, as: "children", include: [{ model: Product }] },
+        {
+          model: Product,
+        },
+      ],
       where: {
         parentId: null,
       },
     });
-    res.status(200).json({
-      success: true,
-      message: "Lấy danh mục thành công",
+    if (categories)
+      res.status(200).json({
+        success: true,
+        message: "Lấy danh mục thành công",
 
-      categories: categories,
+        categories: categories,
+      });
+  } catch (error) {
+    next(error);
+  }
+};
+const getCategoryById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const category = await Category.findOne({
+      where: { id },
+      include: [
+        { model: Category, as: "children", include: [{ model: Product }] },
+        { model: Category, as: "parent", include: [{ model: Product }] },
+        {
+          model: Product,
+        },
+      ],
     });
+    if (category) {
+      res.status(200).json({
+        success: true,
+        message: "Lấy danh mục thành công",
+        data: {
+          category,
+        },
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getChildCategory = async (req, res, next) => {
+  try {
+    const categories = await Category.findAll({
+      include: ["parent"],
+      where: {
+        parentId: !null,
+      },
+    });
+    if (categories) {
+      res.status(200).json({
+        success: true,
+        message: "Lấy danh mục thành công",
+
+        categories: categories,
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getCategoryBySlug = async (req, res, next) => {
+  try {
+    const { slug } = req.params;
+    const category = await Category.findOne({
+      include: ["children", "parent"],
+      where: {
+        slug,
+      },
+    });
+    if (category)
+      res.status(200).json({
+        success: true,
+        message: "Lấy danh mục thành công",
+        category: category,
+      });
   } catch (error) {
     next(error);
   }
@@ -29,6 +103,7 @@ const createCategory = async (req, res, next) => {
     }
     const newCategory = await Category.create({
       name,
+      slug: convertToSlug(name),
       description,
       parentId,
     });
@@ -63,6 +138,7 @@ const updateCategory = async (req, res, next) => {
 
     // Sửa thông tin danh mục
     category.name = name;
+    category.slug = convertToSlug(name);
     category.description = description;
     category.parentId = parentId;
 
@@ -96,4 +172,12 @@ const deleteCategory = async (req, res, next) => {
   }
 };
 
-export { getCategory, createCategory, updateCategory, deleteCategory };
+export {
+  getCategory,
+  createCategory,
+  updateCategory,
+  deleteCategory,
+  getCategoryBySlug,
+  getChildCategory,
+  getCategoryById,
+};

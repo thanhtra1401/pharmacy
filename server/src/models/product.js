@@ -10,9 +10,11 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Product.hasMany(models.DiscountDetail, {
+        as: "discountList",
         foreignKey: "productId",
       });
       Product.hasMany(models.ImageProduct, {
+        as: "images",
         foreignKey: "productId",
       });
       Product.belongsTo(models.Category, {
@@ -35,14 +37,20 @@ module.exports = (sequelize, DataTypes) => {
   Product.init(
     {
       name: DataTypes.STRING,
+      slug: DataTypes.STRING,
       shortDes: DataTypes.STRING,
       description: DataTypes.TEXT,
+      priceWithDiscount: DataTypes.DOUBLE,
       price: DataTypes.DOUBLE,
-      amount: DataTypes.INTEGER,
+      image: DataTypes.STRING,
+      quantity: DataTypes.INTEGER,
+      sold: DataTypes.INTEGER,
       intendedUse: DataTypes.TEXT,
       howToUse: DataTypes.TEXT,
+      ingredient: DataTypes.TEXT,
       sideEffects: DataTypes.TEXT,
       origin: DataTypes.STRING,
+      country: DataTypes.STRING,
       lotNumber: DataTypes.INTEGER,
       manufactureDate: DataTypes.DATE,
       expiriedDate: DataTypes.DATE,

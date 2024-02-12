@@ -1,56 +1,23 @@
 import { BellFilled, MailOutlined } from "@ant-design/icons";
-import { Badge, Drawer, Image, List, Space, Typography } from "antd";
-import { useEffect, useState } from "react";
-import { getComments, getOrders } from "../../apis";
+import { Badge, Drawer, List, Space, Typography } from "antd";
 
 function Header() {
-  const [comments, setComments] = useState([]);
-  const [orders, setOrders] = useState([]);
-  const [commentsOpen, setCommentsOpen] = useState(false);
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
-
-  useEffect(() => {
-    getComments().then((res) => {
-      setComments(res.comments);
-    });
-    getOrders().then((res) => {
-      setOrders(res.products);
-    });
-  }, []);
-
   return (
     <div className=" border-b-2 border-gray-400">
       <div className="flex items-center justify-between mx-8 py-2 ">
-        <Image width={60} src="./logo2.png"></Image>
+        <img width={60} src="/logo2.png" alt="logo"></img>
         <div className="text-2xl font-bold">Admin</div>
         <Space>
-          <Badge count={comments.length} dot className="mx-4">
-            <MailOutlined
-              className="text-xl "
-              onClick={() => {
-                setCommentsOpen(true);
-              }}
-            />
+          <Badge count={1} dot className="mx-4">
+            <MailOutlined className="text-xl " />
           </Badge>
-          <Badge count={orders.length} size="small">
-            <BellFilled
-              className="text-xl"
-              onClick={() => {
-                setNotificationsOpen(true);
-              }}
-            />
+          <Badge count={2} size="small">
+            <BellFilled className="text-xl" />
           </Badge>
         </Space>
-        <Drawer
-          title="Comments"
-          open={commentsOpen}
-          onClose={() => {
-            setCommentsOpen(false);
-          }}
-          maskClosable
-        >
+        <Drawer title="Comments" open={false} maskClosable>
           <List
-            dataSource={comments}
+            dataSource={1}
             renderItem={(item) => {
               return <List.Item>{item.body}</List.Item>;
             }}
@@ -58,14 +25,14 @@ function Header() {
         </Drawer>
         <Drawer
           title="Notifications"
-          open={notificationsOpen}
-          onClose={() => {
-            setNotificationsOpen(false);
-          }}
+          open={false}
+          // onClose={() => {
+          //   setNotificationsOpen(false);
+          // }}
           maskClosable
         >
           <List
-            dataSource={orders}
+            dataSource={1}
             renderItem={(item) => {
               return (
                 <List.Item>

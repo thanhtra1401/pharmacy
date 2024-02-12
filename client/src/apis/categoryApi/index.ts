@@ -1,7 +1,12 @@
 import httpRequest from "../http";
 
-const getCategory = async () => {
+const getCategoryApi = async () => {
   const response = await httpRequest.get("/category");
   return response;
 };
-export { getCategory };
+const getCategoryBySlugApi = async (slug: string) => {
+  const response = await httpRequest.get(`/category/${slug}`);
+  return response;
+};
+
+export { getCategoryApi, getCategoryBySlugApi };

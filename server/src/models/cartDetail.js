@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       cartId: DataTypes.INTEGER,
       productId: DataTypes.INTEGER,
       amount: DataTypes.INTEGER,
+      selected: DataTypes.BOOLEAN,
     },
     {
       sequelize,

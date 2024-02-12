@@ -11,17 +11,26 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Order.hasMany(models.OrderDetail, {
         foreignKey: "orderId",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       });
       Order.belongsTo(models.User, {
         foreignKey: "customerId",
+      });
+      Order.belongsTo(models.Address, {
+        foreignKey: "addressId",
       });
     }
   }
   Order.init(
     {
       customerId: DataTypes.INTEGER,
-      status: DataTypes.STRING,
-      payment: DataTypes.STRING,
+      addressId: DataTypes.INTEGER,
+      status: DataTypes.INTEGER,
+      payment: DataTypes.INTEGER,
+      howReceive: DataTypes.INTEGER,
+      shipFee: DataTypes.DOUBLE,
+
       totalPrice: DataTypes.DOUBLE,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,

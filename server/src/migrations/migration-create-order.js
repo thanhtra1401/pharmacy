@@ -10,16 +10,26 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
+
       customerId: {
         type: Sequelize.INTEGER,
       },
+      addressId: {
+        type: Sequelize.INTEGER,
+      },
       status: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
       },
       payment: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
+      },
+      howReceive: {
+        type: Sequelize.INTEGER,
       },
       totalPrice: {
+        type: Sequelize.DOUBLE,
+      },
+      shipFee: {
         type: Sequelize.DOUBLE,
       },
       createdAt: {

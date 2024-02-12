@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "productId",
       });
       DiscountDetail.belongsTo(models.Discount, {
+        as: "discountProgram",
         foreignKey: "discountId",
       });
     }
@@ -23,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       maxAmount: DataTypes.INTEGER,
       discountId: DataTypes.INTEGER,
       productId: DataTypes.INTEGER,
+      active: DataTypes.BOOLEAN,
     },
     {
       sequelize,

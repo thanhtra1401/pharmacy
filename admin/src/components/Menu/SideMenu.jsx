@@ -3,6 +3,8 @@ import {
   ShopOutlined,
   ShoppingCartOutlined,
   UserOutlined,
+  UnorderedListOutlined,
+  PayCircleOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
 import { useEffect, useState } from "react";
@@ -34,18 +36,28 @@ function SideMenu() {
         },
         {
           label: "Sản phẩm",
-          key: "/products",
+          key: "/san-pham",
           icon: <ShopOutlined />,
         },
         {
           label: "Đơn hàng",
-          key: "/orders",
+          key: "/don-hang",
           icon: <ShoppingCartOutlined />,
         },
         {
           label: "Khách hàng",
-          key: "/customers",
+          key: "/khach-hang",
           icon: <UserOutlined />,
+        },
+        {
+          label: "Danh mục",
+          key: "/danh-muc",
+          icon: <UnorderedListOutlined />,
+        },
+        {
+          label: "Khuyến mại",
+          key: "/khuyen-mai",
+          icon: <PayCircleOutlined />,
         },
       ]}
     ></Menu>

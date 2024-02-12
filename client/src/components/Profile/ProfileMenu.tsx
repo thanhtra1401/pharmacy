@@ -31,12 +31,14 @@ function ProfileMenu({ active }: { active: string }) {
         }}
       ></SubMenu>
       <SubMenu
-        className="hover:text-primary"
+        className={
+          active === "infoAddress" ? "text-primary" : "hover:text-primary"
+        }
         key="Quanlysodiachi"
         title="Quản lý sổ địa chỉ"
         icon={<i className="fa-solid fa-location-dot"></i>}
         onTitleClick={() => {
-          navigate("/");
+          navigate("/ca-nhan/quan-ly-dia-chi");
         }}
       ></SubMenu>
       <SubMenu

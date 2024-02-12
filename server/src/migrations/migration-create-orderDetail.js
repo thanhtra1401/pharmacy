@@ -16,8 +16,14 @@ module.exports = {
       productId: {
         type: Sequelize.INTEGER,
       },
+      discountId: {
+        type: Sequelize.INTEGER,
+      },
       amount: {
         type: Sequelize.INTEGER,
+      },
+      price: {
+        type: Sequelize.DOUBLE,
       },
       createdAt: {
         allowNull: false,

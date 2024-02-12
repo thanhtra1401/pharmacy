@@ -14,6 +14,9 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      slug: {
+        type: Sequelize.STRING,
+      },
       description: {
         type: Sequelize.STRING,
       },

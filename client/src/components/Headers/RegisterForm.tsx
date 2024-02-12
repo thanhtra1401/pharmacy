@@ -2,6 +2,7 @@ import { yupResolver } from "@hookform/resolvers/yup/src/yup.js";
 import { useForm } from "react-hook-form";
 import { registerSchema } from "../../utils/yupSchema";
 import { registerApi } from "../../apis/userApi/api";
+import Swal from "sweetalert2";
 
 interface Props {
   closeModal: () => void;
@@ -26,13 +27,20 @@ function RegisterForm(props: Props) {
   const onSubmit = async (data: Data) => {
     try {
       const response = await registerApi(data);
-      alert(response.data.message);
+      console.log(response);
+
+      if (response.status === 201)
+        Swal.fire({
+          icon: "success",
+          text: response.data.message,
+        });
+
       props.toLogin();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log(error);
       if (error.response) {
-        alert(error.response.data.message);
+        Swal.fire(error.response.data.message);
       } else {
         console.log(error);
       }

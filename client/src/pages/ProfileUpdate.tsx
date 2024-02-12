@@ -5,7 +5,7 @@ import ProfileMenu from "../components/Profile/ProfileMenu";
 import { Controller, useForm } from "react-hook-form";
 import Input from "antd/es/input/Input";
 import dayjs from "dayjs";
-import { updateUser } from "../apis/userApi/api";
+import { updateUserApi } from "../apis/userApi/api";
 import Swal from "sweetalert2";
 // import moment from "moment";
 // import { UploadChangeParam } from "antd/es/upload";
@@ -53,7 +53,7 @@ function ProfileUpdate() {
     const dataConvert: Data = { ...data, dob: new Date(data.dob) };
     try {
       if (profileData.id) {
-        const response = await updateUser(profileData.id, dataConvert);
+        const response = await updateUserApi(profileData.id, dataConvert);
 
         Swal.fire({
           icon: "success",

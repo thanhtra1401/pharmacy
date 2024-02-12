@@ -34,32 +34,38 @@ const forgotPasswordApi = async (data: {
   const response = await httpRequest.post("/user/reset-password", data);
   return response;
 };
-const getUser = async (id: number) => {
+const getUserApi = async (id: number) => {
   const response = await httpRequest.get(`user/${id} `);
   return response;
 };
 
-const updateUser = async (
+const updateUserApi = async (
   id: number,
   data: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-    dob: Date;
-    gender: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phone?: string;
+    dob?: Date;
+    gender?: string;
   }
 ) => {
   const response = await httpRequest.put(`user/${id}`, data);
   return response;
 };
 
+const uploadAvatarApi = async (file: FormData, id: number) => {
+  const response = await httpRequest.put(`user/upload-avatar/${id}`, file);
+  return response;
+};
+
 export {
   loginApi,
-  getUser,
+  getUserApi,
   registerApi,
   logoutApi,
   forgotPasswordApi,
   resetPasswordApi,
-  updateUser,
+  updateUserApi,
+  uploadAvatarApi,
 };

@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Cart.hasMany(models.CartDetail, {
         foreignKey: "cartId",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       });
       Cart.belongsTo(models.User, {
         foreignKey: "customerId",

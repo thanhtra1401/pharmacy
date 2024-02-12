@@ -14,16 +14,28 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      slug: {
+        type: Sequelize.STRING,
+      },
+      image: {
+        type: Sequelize.STRING,
+      },
       shortDes: {
         type: Sequelize.STRING,
       },
       description: {
         type: Sequelize.TEXT,
       },
+      priceWithDiscount: {
+        type: Sequelize.DOUBLE,
+      },
       price: {
         type: Sequelize.DOUBLE,
       },
-      amount: {
+      quantity: {
+        type: Sequelize.INTEGER,
+      },
+      sold: {
         type: Sequelize.INTEGER,
       },
       intendedUse: {
@@ -36,6 +48,12 @@ module.exports = {
         type: Sequelize.TEXT,
       },
       origin: {
+        type: Sequelize.STRING,
+      },
+      country: {
+        type: Sequelize.STRING,
+      },
+      ingredient: {
         type: Sequelize.STRING,
       },
       lotNumber: {

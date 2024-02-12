@@ -11,6 +11,11 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Discount.hasMany(models.DiscountDetail, {
         foreignKey: "discountId",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+      });
+      Discount.hasMany(models.OrderDetail, {
+        foreignKey: "discountId",
       });
     }
   }

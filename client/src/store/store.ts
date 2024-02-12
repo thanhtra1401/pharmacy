@@ -17,4 +17,18 @@ const authStore = create<AuthState>((set) => ({
   login: (user: User) => set(() => ({ isAuthenticated: true, user: user })),
   logout: () => set(() => ({ isAuthenticated: false, user: null })),
 }));
+interface ProductState {
+  cart_id: number;
+  product_id: number;
+  setProductId: (product_id: number) => void;
+  setCartId: (cart_id: number) => void;
+}
+
+const productStore = create<ProductState>((set) => ({
+  cart_id: -1,
+  product_id: -1,
+  setProductId: (product_id: number) => set(() => ({ product_id: product_id })),
+  setCartId: (cart_id: number) => set(() => ({ cart_id: cart_id })),
+}));
+export { productStore };
 export default authStore;

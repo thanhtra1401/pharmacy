@@ -16,6 +16,9 @@ module.exports = {
       maxAmount: {
         type: Sequelize.INTEGER,
       },
+      active: {
+        type: Sequelize.BOOLEAN,
+      },
       discountId: {
         type: Sequelize.INTEGER,
       },

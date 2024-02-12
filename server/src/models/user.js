@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       User.hasOne(models.Cart, {
         foreignKey: "customerId",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       });
       User.hasMany(models.Order, {
         foreignKey: "customerId",
@@ -20,6 +22,9 @@ module.exports = (sequelize, DataTypes) => {
       });
       User.hasMany(models.Comment, {
         foreignKey: "userId",
+      });
+      User.hasMany(models.Address, {
+        foreignKey: "customerId",
       });
     }
   }
