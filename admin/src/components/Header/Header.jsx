@@ -1,12 +1,15 @@
 import { BellFilled, MailOutlined } from "@ant-design/icons";
 import { Badge, Drawer, List, Space, Typography } from "antd";
-
-function Header() {
+import PropTypes from "prop-types";
+Header.propTypes = {
+  type: PropTypes.string,
+};
+function Header({ type }) {
   return (
     <div className=" border-b-2 border-gray-400">
       <div className="flex items-center justify-between mx-8 py-2 ">
         <img width={60} src="/logo2.png" alt="logo"></img>
-        <div className="text-2xl font-bold">Admin</div>
+        <div className="text-2xl font-bold">{type}</div>
         <Space>
           <Badge count={1} dot className="mx-4">
             <MailOutlined className="text-xl " />

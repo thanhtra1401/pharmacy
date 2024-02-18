@@ -31,6 +31,11 @@ const getOrderDetailsInDiscountApi = async (id) => {
   const response = await httpRequest.get(`/order-detail/in-discount/${id}`);
   return response;
 };
+
+const getOrdersByMonthApi = async () => {
+  const response = await httpRequest.get("/order/by-month");
+  return response;
+};
 export {
   getOrdersApi,
   getOrderApi,
@@ -38,4 +43,5 @@ export {
   getOrdersOfUserApi,
   getOrdersOfDiscountApi,
   getOrderDetailsInDiscountApi,
+  getOrdersByMonthApi,
 };

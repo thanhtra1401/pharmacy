@@ -1,4 +1,4 @@
-import { Op } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 import {
   Product,
   ImageProduct,
@@ -8,6 +8,7 @@ import {
   Category,
 } from "../models";
 import { convertToSlug } from "../utils/function";
+import moment from "moment";
 
 const getProducts = async (req, res, next) => {
   try {
@@ -20,6 +21,7 @@ const getProducts = async (req, res, next) => {
       category,
       slugCat,
       parentCatSlug,
+      date,
     } = req.query;
     const limit = size ? parseInt(size) : 12;
     const offset = page ? (parseInt(page) - 1) * parseInt(size) : 0;
@@ -30,6 +32,12 @@ const getProducts = async (req, res, next) => {
     const getBySlugCat = slugCat ? { slug: slugCat } : null;
     const getByParentCat = parentCatSlug ? { slug: parentCatSlug } : null;
     const orderArray = [];
+
+    const expirationDate = date && moment().add(date, "days").toDate();
+
+    const getByExpiration = date
+      ? { expiriedDate: { [Op.lte]: expirationDate } }
+      : null;
 
     if (sort_by && order) {
       const validAttributes = ["price", "createdAt", "sold"];
@@ -44,8 +52,9 @@ const getProducts = async (req, res, next) => {
     const { count, rows } = await Product.findAndCountAll({
       where: {
         ...getByName,
+        ...getByExpiration,
       },
-      order: orderArray,
+      order: [...orderArray],
       include: [
         {
           model: ImageProduct,
@@ -81,6 +90,84 @@ const getProducts = async (req, res, next) => {
             ...getByCategory,
             ...getBySlugCat,
           },
+          attributes: ["name"],
+        },
+      ],
+
+      limit: limit,
+      offset: offset,
+      distinct: true,
+    });
+    const totalPages = Math.ceil(count / limit);
+    res.status(200).json({
+      success: true,
+      message: "Lấy sản phẩm thành công",
+      data: {
+        totalItems: count,
+        products: rows,
+        currentPage: page ? page : 1,
+        totalPages: totalPages,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getProductsDiscount = async (req, res, next) => {
+  try {
+    const { page, size, name, sort_by, order } = req.query;
+    const limit = size ? parseInt(size) : 12;
+    const offset = page ? (parseInt(page) - 1) * parseInt(size) : 0;
+    const getByName = name ? { name: { [Op.like]: `%${name}%` } } : null;
+
+    const orderArray = [];
+
+    if (sort_by && order) {
+      const validAttributes = ["price", "createdAt", "sold"];
+      if (
+        validAttributes.includes(sort_by) &&
+        (order === "asc" || order === "desc")
+      ) {
+        orderArray.push([sort_by, order]);
+      }
+    }
+
+    const { count, rows } = await Product.findAndCountAll({
+      where: {
+        ...getByName,
+      },
+      order: orderArray,
+      include: [
+        {
+          model: ImageProduct,
+          as: "images",
+          attributes: ["url"],
+        },
+        {
+          model: DiscountDetail,
+          where: {
+            active: true,
+          },
+          as: "discountList",
+          attributes: ["minAmount", "maxAmount", "active", "id"],
+          include: [
+            {
+              model: Discount,
+              as: "discountProgram",
+              attributes: ["discountPercent", "startAt", "endAt", "id", "name"],
+            },
+          ],
+        },
+        {
+          model: Category,
+          include: [
+            {
+              model: Category,
+              as: "parent",
+            },
+          ],
+
           attributes: ["name"],
         },
       ],
@@ -288,8 +375,6 @@ const getProduct = async (req, res, next) => {
         },
         {
           model: Category,
-
-          attributes: ["name"],
         },
       ],
     });
@@ -334,4 +419,5 @@ export {
   deleteProduct,
   getProduct,
   uploadMainImageProduct,
+  getProductsDiscount,
 };

@@ -6,8 +6,8 @@ import {
   generateResetToken,
 } from "../middlewares/jwt";
 import jwt from "jsonwebtoken";
-import { Op } from "sequelize";
 import sendEmail from "../utils/sendEmail";
+const { Op, Sequelize } = require("sequelize");
 
 const register = async (req, res, next) => {
   const { email, password, firstName, lastName } = req.body;
@@ -247,6 +247,41 @@ const getAllCustomers = async (req, res, next) => {
     next(error);
   }
 };
+
+const getCustomersByMonth = async (req, res, next) => {
+  try {
+    const customers = await User.findAll({
+      where: {
+        role: 0,
+      },
+      attributes: [
+        [Sequelize.fn("MONTH", Sequelize.col("User.createdAt")), "month"],
+        [Sequelize.fn("YEAR", Sequelize.col("User.createdAt")), "year"],
+        [Sequelize.fn("COUNT", Sequelize.col("*")), "totalCustomers"],
+      ],
+      group: [
+        Sequelize.fn("MONTH", Sequelize.col("User.createdAt")),
+        Sequelize.fn("YEAR", Sequelize.col("User.createdAt")),
+      ],
+      order: [
+        [Sequelize.fn("YEAR", Sequelize.col("User.createdAt")), "ASC"],
+        [Sequelize.fn("MONTH", Sequelize.col("User.createdAt")), "ASC"],
+      ],
+      //group: ["status"],
+    });
+    if (customers) {
+      res.status(200).json({
+        success: true,
+        message: "Lấy thành công danh sách khách hàng",
+        data: {
+          customers,
+        },
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
 const forgotPassword = async (req, res, next) => {
   try {
     const { email } = req.query;
@@ -391,4 +426,5 @@ export {
   updateUser,
   deleteUser,
   uploadAvatar,
+  getCustomersByMonth,
 };

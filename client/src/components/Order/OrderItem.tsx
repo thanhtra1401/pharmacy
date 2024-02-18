@@ -6,11 +6,44 @@ import { addToCartApi, updateCartApi } from "../../apis/cartApi";
 import { productStore } from "../../store/store";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { updateOrderApi } from "../../apis/orderApi";
 
 function OrderItem({ order }: { order: Order }) {
   const cartId = productStore((state) => state.cart_id);
   const [buy, setBuy] = useState(false);
   const navigate = useNavigate();
+  const cancelOrder = async () => {
+    Swal.fire({
+      icon: "question",
+      title: "Hủy đơn hàng",
+      text: "Bạn có chắc chắn muốn hủy đơn hàng này?",
+      showDenyButton: true,
+      confirmButtonText: "Xác nhận",
+      confirmButtonColor: "#d33",
+      denyButtonColor: "#3085d6",
+      denyButtonText: `Trở lại`,
+    }).then(async (result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        if (order.id) {
+          const response = await updateOrderApi({ status: 4 }, order.id);
+          if (response.status === 200) {
+            Swal.fire({
+              icon: "success",
+              title: "Thành công",
+              text: "Đã hủy đơn hàng",
+            });
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Thất bại",
+              text: "Đã xảy ra lỗi",
+            });
+          }
+        }
+      }
+    });
+  };
 
   const addToCart = async () => {
     order.OrderDetails.forEach(async (item) => {
@@ -37,7 +70,9 @@ function OrderItem({ order }: { order: Order }) {
     });
 
     Swal.fire({
-      title: "Đã thêm vào giỏ hàng",
+      title: "Thành công",
+      icon: "success",
+      text: "Đã thêm vào giỏ hàng",
       showDenyButton: true,
       showCancelButton: false,
       confirmButtonText: "Đi đến giỏ hàng",
@@ -78,6 +113,12 @@ function OrderItem({ order }: { order: Order }) {
             <span className="mr-4 ml-2">Đã giao</span>
           </div>
         )}
+        {order.status === 4 && (
+          <div className=" text-red-500 flex items-center">
+            <i className="fa-solid fa-circle text-[8px]"></i>
+            <span className="mr-4 ml-2">Đã hủy</span>
+          </div>
+        )}
       </div>
       {order.OrderDetails.map((item) => (
         <div key={item.id} className="flex mt-4 items-center justify-between">
@@ -115,7 +156,7 @@ function OrderItem({ order }: { order: Order }) {
           </span>
         </div>
       </div>
-      <div className="flex  py-4 items-center justify-end ">
+      <div className="flex  py-4 items-center justify-between ">
         <Button
           type="primary"
           className="bg-primary mx-4"
@@ -125,6 +166,18 @@ function OrderItem({ order }: { order: Order }) {
           }}
         >
           <div className="px-4">Mua lại</div>
+        </Button>
+        <Button
+          type="primary"
+          danger
+          disabled={order.status !== 0}
+          className={` mx-4`}
+          shape="round"
+          onClick={() => {
+            order.status === 0 && cancelOrder();
+          }}
+        >
+          <div className="px-4">Hủy</div>
         </Button>
       </div>
       {buy && (

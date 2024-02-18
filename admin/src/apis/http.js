@@ -35,11 +35,13 @@ class Http {
           if (data) {
             if (data.role === 0) {
               Swal.fire({
-                title: "Tài khoản không phù hợp",
+                title: "Thất bại",
+                text: "Tài khoản không có quyền truy cập",
                 icon: "error",
               });
               return false;
             }
+            setLS("role", data.role);
             setLS("user_id", data.id);
             this.accessToken = data.accessToken;
             setLS("access_token", this.accessToken);

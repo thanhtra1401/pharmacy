@@ -95,6 +95,12 @@ function OrderDetail() {
                   <span className="mr-4 ml-2">Đã giao</span>
                 </div>
               )}
+              {order.status === 4 && (
+                <div className=" text-red-500 flex items-center">
+                  <i className="fa-solid fa-circle text-[8px]"></i>
+                  <span className="mr-4 ml-2">Đã hủy</span>
+                </div>
+              )}
             </div>
             <div className=" py-3 grid grid-cols-12">
               <div className="col-span-6 border-r border-gray-300">
@@ -222,6 +228,13 @@ function OrderDetail() {
               <div className="mt-4 ">
                 <i className="fa-solid fa-circle-check mr-2 text-green-600"></i>
                 Đã giao hàng vào{" "}
+                {order.updatedAt && new Date(order.updatedAt).toLocaleString()}
+              </div>
+            )}
+            {order.status === 4 && (
+              <div className="mt-4 ">
+                <i className="fa-solid fa-ban mr-2 text-red-600"></i>
+                Đã hủy vào{" "}
                 {order.updatedAt && new Date(order.updatedAt).toLocaleString()}
               </div>
             )}

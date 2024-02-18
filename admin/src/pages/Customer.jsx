@@ -40,7 +40,7 @@ function Customer() {
           setDeleted((prev) => !prev);
           Swal.fire({
             icon: "success",
-            text: "Đã xóa sản phẩm",
+            text: "Đã xóa tài khoản khách hàng",
           });
         } else {
           Swal.fire({

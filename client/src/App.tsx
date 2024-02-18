@@ -14,6 +14,9 @@ import Product from "./pages/Product";
 import OrderDetail from "./pages/OrderDetail";
 import Address from "./pages/Address";
 import FilterCategory from "./pages/FilterCategory";
+import ProductsDiscount from "./pages/ProductsDiscount";
+import Prescription from "./pages/Prescription";
+import PrescriptionDetail from "./pages/PrescriptionDetail";
 
 function App() {
   return (
@@ -24,6 +27,15 @@ function App() {
           element={
             <MainLayout>
               <Home />
+            </MainLayout>
+          }
+        ></Route>
+
+        <Route
+          path="/khuyen-mai/:discountId"
+          element={
+            <MainLayout>
+              <ProductsDiscount />
             </MainLayout>
           }
         ></Route>
@@ -121,6 +133,22 @@ function App() {
           element={
             <MainLayout>
               <Product />
+            </MainLayout>
+          }
+        ></Route>
+        <Route
+          path="/don-thuoc"
+          element={
+            <MainLayout>
+              <Prescription />
+            </MainLayout>
+          }
+        ></Route>
+        <Route
+          path="/don-thuoc/chi-tiet-don-thuoc/:id"
+          element={
+            <MainLayout>
+              <PrescriptionDetail />
             </MainLayout>
           }
         ></Route>

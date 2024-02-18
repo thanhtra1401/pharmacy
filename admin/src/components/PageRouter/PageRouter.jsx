@@ -19,6 +19,8 @@ import AllCategory from "../../pages/AllCategory";
 import AddCategory from "../../pages/AddCategory";
 import AddChildCategory from "../../pages/AddChildCategory";
 import CategoryDetail from "../../pages/CategoryDetail";
+import ApplyDiscountForProduct from "../../pages/ApplyDiscountForProduct";
+import ProductExpiration from "../../pages/ProductExpiration";
 
 function PageRouter() {
   return (
@@ -44,6 +46,10 @@ function PageRouter() {
         path="/san-pham/them-moi-san-pham"
         element={<AddProduct />}
       ></Route>
+      <Route
+        path="/san-pham/san-pham-sap-het-han"
+        element={<ProductExpiration />}
+      ></Route>
       <Route path="/khuyen-mai" element={<Discount />}></Route>
       <Route
         path="/khuyen-mai/them-moi-chuong-trinh-khuyen-mai"
@@ -56,6 +62,14 @@ function PageRouter() {
       <Route path="/khuyen-mai/ap-dung" element={<ApplyDiscountList />}></Route>
       <Route
         path="/khuyen-mai/ap-dung/:discountId"
+        element={<ApplyDiscount />}
+      ></Route>
+      <Route
+        path="/khuyen-mai/ap-dung/san-pham/:productId"
+        element={<ApplyDiscountForProduct />}
+      ></Route>
+      <Route
+        path="/khuyen-mai/ap-dung/chuong-trinh/:discountId"
         element={<ApplyDiscount />}
       ></Route>
       <Route

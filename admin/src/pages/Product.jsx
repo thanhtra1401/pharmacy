@@ -19,6 +19,14 @@ function Product() {
       >
         Danh sách sản phẩm
       </div>
+      <div
+        className="py-2 px-4 rounded-lg border w-96 mt-6 hover:text-blue-500 hover:border-blue-500 cursor-pointer"
+        onClick={() => {
+          navigate("/san-pham/san-pham-sap-het-han");
+        }}
+      >
+        Sản phẩm sắp hết hạn
+      </div>
     </div>
   );
 }

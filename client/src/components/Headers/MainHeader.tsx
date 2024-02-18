@@ -148,7 +148,7 @@ function MainHeader({ showLogin }: Props) {
                     title="Quản lý sổ địa chỉ"
                     icon={<i className="fa-solid fa-location-dot"></i>}
                     onTitleClick={() => {
-                      navigate("/");
+                      navigate("/ca-nhan/quan-ly-dia-chi");
                     }}
                   ></SubMenu>
                   <SubMenu
@@ -157,7 +157,7 @@ function MainHeader({ showLogin }: Props) {
                     title="Đơn thuốc của tôi"
                     icon={<i className="fa-solid fa-file-medical"></i>}
                     onTitleClick={() => {
-                      navigate("/");
+                      navigate("/don-thuoc");
                     }}
                   ></SubMenu>
                   <SubMenu

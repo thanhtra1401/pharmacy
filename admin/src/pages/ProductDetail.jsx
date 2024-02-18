@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { getProductApi } from "../apis/productApi";
 import Loading from "../components/Home/Loading";
 import { formatCurrency } from "../utils/function";
@@ -9,7 +9,7 @@ function ProductDetail() {
   const { id } = useParams();
   const [product, setProduct] = useState();
   const [loading, setLoading] = useState(true);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const getProduct = async () => {
       const response = await getProductApi(id);
@@ -101,13 +101,22 @@ function ProductDetail() {
           <div className="w-1/6 font-medium">Danh mục: </div>
           <div className="w-5/6 text-blue-500 underline hover:text-blue-600 cursor-pointer">
             <Tooltip title="Xem chi tiết danh mục" color="blue">
-              {product.Category.name}
+              <span
+                onClick={() => {
+                  navigate(
+                    `/danh-muc/chi-tiet-danh-muc/${product.Category.id}`
+                  );
+                }}
+              >
+                {product.Category.name}
+              </span>
             </Tooltip>
           </div>
         </div>
+
         <div className="mt-4 flex items-center">
           <div className="w-1/6 font-medium">Chương trình khuyến mại: </div>
-          <div className="w-5/6 ">
+          <div className="">
             {product.discountList.length > 0 &&
               product.discountList.map((item) => (
                 <div className="mt-2 flex" key={item.id}>
@@ -116,9 +125,18 @@ function ProductDetail() {
                     color="blue"
                     className="text-blue-500 text-base underline hover:text-blue-600 cursor-pointer"
                   >
-                    {item.discountProgram.name}
+                    <span
+                      onClick={() =>
+                        navigate(
+                          `/khuyen-mai/chi-tiet-chuong-trinh/${item.discountProgram.id}`
+                        )
+                      }
+                    >
+                      {item.discountProgram.name}
+                    </span>
                   </Tooltip>
                   {item.active &&
+                    new Date(item.discountProgram.startAt) <= new Date() &&
                     new Date(item.discountProgram.endAt) > new Date() && (
                       <div className="py-1 px-2 border-green-600 border-[1px] w-min whitespace-nowrap text-xs ml-4 text-green-500 ">
                         Đang áp dụng
@@ -126,6 +144,17 @@ function ProductDetail() {
                     )}
                 </div>
               ))}
+          </div>
+        </div>
+        <div className="mt-4 flex items-center">
+          <div className="w-1/6 font-medium">
+            Áp dụng chương trình khuyến mại:{" "}
+          </div>
+          <div className="w-5/6 text-blue-500 underline hover:text-blue-600 cursor-pointer">
+            <Link to={`/khuyen-mai/ap-dung/san-pham/${product.id}`}>
+              {" "}
+              Áp dụng chương trình khuyến mại mới
+            </Link>
           </div>
         </div>
       </div>

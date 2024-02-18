@@ -1,8 +1,14 @@
-import { Discount, DiscountDetail, Product, Category } from "../models";
+import {
+  Discount,
+  DiscountDetail,
+  Product,
+  Category,
+  OrderDetail,
+} from "../models";
 import { Op } from "sequelize";
 const getDiscount = async (req, res, next) => {
   try {
-    const { page, size, valid } = req.query;
+    const { page, size, valid, active } = req.query;
     const limit = size ? parseInt(size) : 12;
     const offset = page ? (parseInt(page) - 1) * parseInt(size) : 0;
     const getValid =
@@ -39,6 +45,7 @@ const getDiscount = async (req, res, next) => {
               },
             ],
           },
+          model: OrderDetail,
         },
       ],
       limit: limit,

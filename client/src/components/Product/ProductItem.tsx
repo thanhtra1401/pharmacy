@@ -13,8 +13,8 @@ function ProductItem({ product }: { product: Product }) {
       ? product.discountList.find(
           (item) =>
             item.active &&
-            new Date(item.discountProgram.endAt) > new Date() &&
-            new Date(item.discountProgram.startAt) <= new Date()
+            new Date(item.discountProgram?.endAt) > new Date() &&
+            new Date(item.discountProgram?.startAt) <= new Date()
         )
       : null;
 
@@ -23,11 +23,7 @@ function ProductItem({ product }: { product: Product }) {
       bodyStyle={{ padding: "16px" }}
       hoverable
       cover={
-        <img
-          className="px-6 pt-4 h-[180px]"
-          alt="example"
-          src={product.image}
-        />
+        <img className="px-6 pt-4 h-[180px]" alt="img" src={product.image} />
       }
       className="relative rounded-xl"
       onClick={() => {

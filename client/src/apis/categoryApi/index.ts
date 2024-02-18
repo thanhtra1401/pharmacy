@@ -5,7 +5,7 @@ const getCategoryApi = async () => {
   return response;
 };
 const getCategoryBySlugApi = async (slug: string) => {
-  const response = await httpRequest.get(`/category/${slug}`);
+  const response = await httpRequest.get(`/category/slug/${slug}`);
   return response;
 };
 

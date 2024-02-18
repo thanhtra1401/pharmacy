@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getDiscountApi } from "../apis/discountApi";
 import Loading from "../components/Home/Loading";
 import { Modal } from "antd";
@@ -196,6 +196,16 @@ function DiscountDetail() {
                 Xem chi tiết
               </div>
             )}
+          </div>
+
+          <div className="mt-6 flex items-center">
+            <div className="w-1/3 font-medium">Áp dụng: </div>
+            <Link
+              to={`/khuyen-mai/ap-dung/chuong-trinh/${id}`}
+              className="text-blue-500 hover:text-blue-600 hover:underline cursor-pointer"
+            >
+              Áp dụng chương trình
+            </Link>
           </div>
         </div>
       </div>

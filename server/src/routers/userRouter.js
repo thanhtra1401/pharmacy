@@ -3,6 +3,7 @@ import {
   deleteUser,
   forgotPassword,
   getAllCustomers,
+  getCustomersByMonth,
   getUserInfo,
   login,
   logout,
@@ -30,6 +31,7 @@ userRouter.put(
   uploadImage("avatar"),
   uploadAvatar
 );
+userRouter.get("/by-month", verifyToken, isAdmin, getCustomersByMonth);
 userRouter.get("/:id", verifyToken, getUserInfo);
 userRouter.delete("/:id", verifyToken, isAdmin, deleteUser);
 userRouter.get("/", verifyToken, isAdmin, getAllCustomers);

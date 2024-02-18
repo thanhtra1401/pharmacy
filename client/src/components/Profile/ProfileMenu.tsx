@@ -42,12 +42,14 @@ function ProfileMenu({ active }: { active: string }) {
         }}
       ></SubMenu>
       <SubMenu
-        className="hover:text-primary"
+        className={
+          active === "infoPrescription" ? "text-primary" : "hover:text-primary"
+        }
         key="Donthuoccuatoi"
         title="Đơn thuốc của tôi"
         icon={<i className="fa-solid fa-file-medical"></i>}
         onTitleClick={() => {
-          navigate("/");
+          navigate("/don-thuoc");
         }}
       ></SubMenu>
       <SubMenu

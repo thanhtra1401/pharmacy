@@ -24,7 +24,7 @@ function AllDiscounts() {
   };
   useEffect(() => {
     getDiscounts();
-  }, [deleted]);
+  }, [deleted, openEdit]);
 
   const handleDelete = async (id) => {
     Swal.fire({
@@ -63,6 +63,7 @@ function AllDiscounts() {
         onCancel={() => {
           setOpenEdit(false);
         }}
+        maskClosable={false}
       >
         <EditDiscount discount={discountEdit} setOpenEdit={setOpenEdit} />
       </Modal>

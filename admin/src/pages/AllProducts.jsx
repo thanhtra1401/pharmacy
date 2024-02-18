@@ -41,7 +41,7 @@ function AllProducts() {
 
   const handleDelete = async (id) => {
     Swal.fire({
-      title: "Xóa danh mục",
+      title: "Xóa sản phẩm",
       text: "Bạn có chắc chắn muốn xóa sản phẩm này?",
       showDenyButton: true,
       confirmButtonText: "Xóa",

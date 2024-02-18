@@ -96,6 +96,10 @@ function Order() {
                   text: "Đã giao",
                   value: 2,
                 },
+                {
+                  text: "Đã hủy",
+                  value: 4,
+                },
               ],
               onFilter: (value, record) => record.status === value,
 
@@ -141,6 +145,7 @@ function Order() {
                     </div>
                   );
                 if (status === 2) return <Tag color="green">Đã giao</Tag>;
+                if (status === 4) return <Tag color="red">Đã hủy</Tag>;
               },
             },
             {

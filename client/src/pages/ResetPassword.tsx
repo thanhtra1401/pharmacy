@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { resetPasswordSchema } from "../utils/yupSchema";
 import { resetPasswordApi } from "../apis/userApi/api";
+import Swal from "sweetalert2";
 
 function ResetPassword() {
   const [showLogin, setShowLogin] = useState(false);
@@ -31,9 +32,11 @@ function ResetPassword() {
       const response = await resetPasswordApi(data);
       if (response) setLoading(false);
       if (response.data.success) {
-        alert(
-          `Mã xác minh đã được gửi đến địa chỉ email ${data.email}. Vui lòng kiểm tra email để xác minh `
-        );
+        Swal.fire({
+          title: "Thành công",
+          icon: "success",
+          text: `Mã xác minh đã được gửi đến địa chỉ email ${data.email}. Vui lòng kiểm tra email để xác minh `,
+        });
         navigate("/");
       }
 

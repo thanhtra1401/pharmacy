@@ -51,9 +51,9 @@ function Home() {
           <div className="absolute top-[-8px] right-[50%] translate-x-[50%] text-white font-medium ">
             Sản phẩm bán chạy
           </div>
-          <div className="grid grid-cols-12 mt-4">
+          <div className="grid grid-cols-12 mt-4 gap-2">
             {products.map((product) => (
-              <div key={product.id} className="col-span-2 mr-2">
+              <div key={product.id} className="col-span-2">
                 <ProductItem product={product} />
               </div>
             ))}

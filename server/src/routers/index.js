@@ -10,6 +10,8 @@ import cartDetailRouter from "./cartDetailRouter.js";
 import addressRouter from "./addressRouter.js";
 import orderRouter from "./orderRouter.js";
 import orderDetailRouter from "./orderDetailRouter.js";
+import prescriptionRouter from "./prescriptionRouter.js";
+import prescriptionDetailRouter from "./prescriptionDetailRouter.js";
 
 const rootRouter = express.Router();
 
@@ -24,4 +26,6 @@ rootRouter.use("/cart-detail", cartDetailRouter);
 rootRouter.use("/address", addressRouter);
 rootRouter.use("/order", orderRouter);
 rootRouter.use("/order-detail", orderDetailRouter);
+rootRouter.use("/prescription", prescriptionRouter);
+rootRouter.use("/prescription-detail", prescriptionDetailRouter);
 export default rootRouter;

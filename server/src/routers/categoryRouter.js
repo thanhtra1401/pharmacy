@@ -15,9 +15,9 @@ const express = require("express");
 const categoryRouter = express.Router();
 categoryRouter.get("/", getCategory);
 categoryRouter.get("/child", getChildCategory);
+categoryRouter.get("/slug/:slug", getCategoryBySlug);
 categoryRouter.get("/:id", getCategoryById);
 
-categoryRouter.get("/:slug", getCategoryBySlug);
 categoryRouter.post("/", verifyToken, isAdmin, createCategory);
 categoryRouter.put("/:id", updateCategory);
 categoryRouter.delete("/:id", deleteCategory);

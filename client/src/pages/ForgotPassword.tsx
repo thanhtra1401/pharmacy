@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { forgotPasswordSchema } from "../utils/yupSchema";
 import { forgotPasswordApi } from "../apis/userApi/api";
+import Swal from "sweetalert2";
 
 function ForgotPassword() {
   const [showLogin, setShowLogin] = useState(false);
@@ -28,7 +29,12 @@ function ForgotPassword() {
   });
   const onSubmit = async (data: Data) => {
     try {
-      if (!token) alert("Không tìm thấy địa chỉ");
+      if (!token)
+        Swal.fire({
+          title: "Đã xảy ra lỗi",
+          text: "Không tìm thấy địa chỉ",
+          icon: "error",
+        });
       else {
         setLoading(true);
         const bodyApi = {
@@ -38,7 +44,11 @@ function ForgotPassword() {
         const response = await forgotPasswordApi(bodyApi);
         if (response) setLoading(false);
         if (response.data.success) {
-          alert(response.data.message);
+          Swal.fire({
+            title: "Thành công",
+            text: "Thay đổi thành công địa chỉ",
+            icon: "success",
+          });
           navigate("/");
         }
       }
@@ -72,6 +82,7 @@ function ForgotPassword() {
             <div className="mb-1">
               <input
                 {...register("password")}
+                type="password"
                 placeholder="Nhập mật khẩu mới"
                 className="border-[0.5px] border-gray-300 rounded-lg px-4 py-3 w-full outline-none focus:border-primary"
               />

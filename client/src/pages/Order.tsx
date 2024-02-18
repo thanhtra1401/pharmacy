@@ -161,10 +161,16 @@ function Order() {
                     .filter((order) => order.status === 1)
                     .map((order) => <OrderItem key={order.id} order={order} />)}
               </TabPane>
-              <TabPane tab={<div className="w-full px-8">Đã giao</div>}>
+              <TabPane key={4} tab={<div className="w-full px-8">Đã giao</div>}>
                 {orders.length > 0 &&
                   orders
                     .filter((order) => order.status === 2)
+                    .map((order) => <OrderItem key={order.id} order={order} />)}
+              </TabPane>
+              <TabPane key={5} tab={<div className="w-full px-8">Đã hủy</div>}>
+                {orders.length > 0 &&
+                  orders
+                    .filter((order) => order.status === 4)
                     .map((order) => <OrderItem key={order.id} order={order} />)}
               </TabPane>
             </Tabs>

@@ -3,6 +3,7 @@ import {
   deleteProduct,
   getProduct,
   getProducts,
+  getProductsDiscount,
   updateProduct,
   uploadMainImageProduct,
 } from "../controllers/productController";
@@ -13,6 +14,7 @@ const express = require("express");
 
 const productRouter = express.Router();
 productRouter.get("/", getProducts);
+productRouter.get("/discount", getProductsDiscount);
 productRouter.post("/", createProduct);
 
 productRouter.put(

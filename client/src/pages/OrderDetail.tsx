@@ -57,7 +57,9 @@ function OrderDetail() {
     });
 
     Swal.fire({
-      title: "Đã thêm vào giỏ hàng",
+      title: "Thành công",
+      icon: "success",
+      text: "Đã thêm vào giỏ hàng",
       showDenyButton: true,
       showCancelButton: false,
       confirmButtonText: "Đi đến giỏ hàng",

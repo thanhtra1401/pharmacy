@@ -77,6 +77,10 @@ function OrdersDiscount({ orders, loading, setIsUpdated }) {
                   text: "Đã giao",
                   value: 2,
                 },
+                {
+                  text: "Đã hủy",
+                  value: 4,
+                },
               ],
               onFilter: (value, record) => record.status === value,
 
@@ -122,6 +126,7 @@ function OrdersDiscount({ orders, loading, setIsUpdated }) {
                     </div>
                   );
                 if (status === 2) return <Tag color="green">Đã giao</Tag>;
+                if (status === 4) return <Tag color="red">Đã hủy</Tag>;
               },
             },
             {

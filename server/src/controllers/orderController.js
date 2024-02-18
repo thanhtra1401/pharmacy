@@ -7,6 +7,7 @@ import {
   Discount,
   Address,
 } from "../models";
+const { Op, literal, Sequelize } = require("sequelize");
 
 const getOrders = async (req, res, next) => {
   try {
@@ -144,6 +145,38 @@ const getOrders = async (req, res, next) => {
           },
         });
       }
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getOrdersByMonth = async (req, res, next) => {
+  try {
+    const orders = await Order.findAll({
+      attributes: [
+        [Sequelize.fn("MONTH", Sequelize.col("Order.createdAt")), "month"],
+        [Sequelize.fn("YEAR", Sequelize.col("Order.createdAt")), "year"],
+        [Sequelize.fn("COUNT", Sequelize.col("*")), "totalOrders"],
+      ],
+      group: [
+        Sequelize.fn("MONTH", Sequelize.col("Order.createdAt")),
+        Sequelize.fn("YEAR", Sequelize.col("Order.createdAt")),
+      ],
+      order: [
+        [Sequelize.fn("YEAR", Sequelize.col("Order.createdAt")), "ASC"],
+        [Sequelize.fn("MONTH", Sequelize.col("Order.createdAt")), "ASC"],
+      ],
+      //group: ["status"],
+    });
+    if (orders) {
+      res.status(200).json({
+        success: true,
+        message: "Lấy thành công danh sách đơn hàng",
+        data: {
+          orders,
+        },
+      });
     }
   } catch (error) {
     next(error);
@@ -310,4 +343,11 @@ const deleteOrder = async (req, res, next) => {
   }
 };
 
-export { createOrder, updateOrder, deleteOrder, getOrderById, getOrders };
+export {
+  createOrder,
+  updateOrder,
+  deleteOrder,
+  getOrderById,
+  getOrders,
+  getOrdersByMonth,
+};

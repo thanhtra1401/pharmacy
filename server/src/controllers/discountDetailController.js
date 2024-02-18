@@ -1,34 +1,9 @@
 import { DiscountDetail, Product, Discount } from "../models";
+import { Op } from "sequelize";
 
-const getDiscountDetail = async (req, res, next) => {
-  try {
-    const discountDetails = await DiscountDetail.findAll();
-    res.status(200).json({
-      success: true,
-      message: "Lấy danh sách khuyến mại thành công",
-      discountDetails,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-// const getDiscountDetailOfDiscount = async (req, res, next) => {
-//   const discountId = req.params.discountId;
+// const getDiscountDetail = async (req, res, next) => {
 //   try {
-//     const discountDetails = await DiscountDetail.findAll({
-//       include: [
-//         {
-//           model: Discount,
-//           where: {
-//             id: discountId,
-//           },
-//         },
-//         {
-//           model: Product,
-//         },
-//       ],
-//     });
+//     const discountDetails = await DiscountDetail.findAll();
 //     res.status(200).json({
 //       success: true,
 //       message: "Lấy danh sách khuyến mại thành công",
@@ -38,6 +13,73 @@ const getDiscountDetail = async (req, res, next) => {
 //     next(error);
 //   }
 // };
+
+const getDiscountDetail = async (req, res, next) => {
+  try {
+    const { discountId } = req.params;
+    const { page, size } = req.query;
+
+    const limit = size ? parseInt(size) : 12;
+    const offset = page ? (parseInt(page) - 1) * parseInt(size) : 0;
+
+    const { count, rows } = await DiscountDetail.findAndCountAll({
+      where: {
+        active: true,
+      },
+      include: [
+        {
+          model: Discount,
+          as: "discountProgram",
+          where: {
+            id: discountId,
+            startAt: { [Op.lte]: new Date() },
+            endAt: { [Op.gte]: new Date() },
+          },
+        },
+        {
+          model: Product,
+          include: [
+            {
+              model: DiscountDetail,
+              as: "discountList",
+              attributes: ["minAmount", "maxAmount", "active", "id"],
+              include: [
+                {
+                  model: Discount,
+                  as: "discountProgram",
+                  order: ["endAt", "desc"],
+                  attributes: [
+                    "discountPercent",
+                    "startAt",
+                    "endAt",
+                    "id",
+                    "name",
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+      limit: limit,
+      offset: offset,
+      distinct: true,
+    });
+    const totalPages = Math.ceil(count / limit);
+    res.status(200).json({
+      success: true,
+      message: "Lấy danh sách khuyến mại thành công",
+      data: {
+        totalItems: count,
+        discountDetails: rows,
+        currentPage: page ? page : 1,
+        totalPages: totalPages,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 const createDiscountDetail = async (req, res, next) => {
   try {
     const { minAmount, maxAmount, discountId, productId, active } = req.body;
@@ -195,6 +237,7 @@ const updateDiscountDetail = async (req, res, next) => {
     next(error);
   }
 };
+
 const deleteDiscountDetail = async (req, res, next) => {
   try {
     const id = req.params.id;

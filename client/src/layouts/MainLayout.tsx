@@ -1,3 +1,4 @@
+import MyFooter from "../components/Footer/Footer";
 import MainHeader from "../components/Headers/MainHeader";
 import Navigation from "../components/Menu/Navigation";
 interface ChildrenProps {
@@ -12,6 +13,7 @@ function MainLayout({ children }: ChildrenProps) {
       <Navigation />
 
       {children}
+      <MyFooter />
     </div>
   );
 }
